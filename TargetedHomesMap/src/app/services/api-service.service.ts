@@ -11,10 +11,10 @@ export class ApiServiceService {
   constructor(private http: HttpClient) {}
 
   getTargetLocations() {
-    return this.http.get<TargetResponse[]>("http://localhost:5120/locs");
+    return this.http.get<TargetResponse[]>("/api/locs");
   }
 
   getNearestTarget(_address: string) {
-    return this.http.post<ClosestTargetResponse>("http://localhost:5120/closestTarget", {address: _address});
+    return this.http.post<ClosestTargetResponse>("/api/closestTarget", {address: _address});
   }
 }

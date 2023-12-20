@@ -13,7 +13,7 @@ namespace TargetedHomes.Controllers
             _targetBusiness = targetBusiness;
         }
 
-        [HttpGet("/locs")]
+        [HttpGet("/api/locs")]
         public IEnumerable<poi_locs> GetTargets()
         {
             return _targetBusiness.GetTargets("NC");

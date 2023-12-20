@@ -1,4 +1,5 @@
 using GoogleApi.Extensions;
+using Microsoft.AspNetCore.HttpOverrides;
 using TargetedHomes.Business;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,12 +12,17 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<GoogleMapsApiBusiness>();
 builder.Services.AddScoped<TargetBusiness>();
 
+string corsOrigin = "http://th.bryceohmer.com";
+#if DEBUG
+    corsOrigin = "http://localhost:4200";
+#endif
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
                       policy =>
                       {
-                          policy.WithOrigins("http://localhost:4200")
+                          policy.WithOrigins(corsOrigin)
                                 .AllowAnyHeader()
                                 .AllowAnyMethod(); ;
                       });
@@ -28,6 +34,11 @@ builder.Services
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 app.UseCors(MyAllowSpecificOrigins);
 

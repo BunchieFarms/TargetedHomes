@@ -14,13 +14,13 @@ namespace TargetedHomes.Controllers
             _googleMapsBusiness = googleMapsBusiness;
         }
 
-        [HttpPost("/geocode")]
+        [HttpPost("/api/geocode")]
         public async Task<GoogleApi.Entities.Maps.Geocoding.Common.Result?> GeocodeAddress(GeocodeRequest req)
         {
             return await _googleMapsBusiness.GeocodeAddress(req.address);
         }
 
-        [HttpPost("/closestTarget")]
+        [HttpPost("/api/closestTarget")]
         public async Task<ClosestTargetResponse> GetClosestTarget(GeocodeRequest req)
         {
             return await _googleMapsBusiness.GetClosestTarget(req.address);
