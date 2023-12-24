@@ -1,18 +1,30 @@
-<form (ngSumbit)="getNearestTarget()">
-    <mat-form-field>
-      <mat-label>Input</mat-label>
-      <input name="address" [(ngModel)]="addressInput" matInput>
-    </mat-form-field>
-    <button (click)="getNearestTarget()" mat-raised-button>Send</button>
+<p-sidebar [(visible)]="sidebarVisible">
+  <h3>Sidebar</h3>
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+    aliqua.
+    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+  </p>
+</p-sidebar>
+
+<div class="card flex flex-column md:flex-row gap-3">
+  <p-button (click)="sidebarVisible = true" icon="pi pi-arrow-right"></p-button>
+
+  <form (ngSumbit)="getNearestTarget()" style="margin: 5px 20px;">
+    <p-inputGroup>
+      <input name="address" [(ngModel)]="addressInput" type="text" pInputText placeholder="Address" />
+      <button type="button" pButton (click)="getNearestTarget()" label="Search"></button>
+    </p-inputGroup>
   </form>
-  
-  <google-map height="80%" width="100%" [center]="center" [zoom]="zoom">
-    @for (marker of markers; track marker) {
-    <map-marker #markerSpot="mapMarker" [position]="marker.position" [options]="{draggable: false}"
-      (mapClick)="openInfoWindow(markerSpot, marker)" />
-    }
-    <map-info-window>
-      {{closestTargetAddress}}<br>{{distanceToTarget}}<br>{{durationToTarget}}
-    </map-info-window>
-    <map-polyline [path]="routeTo" />
-  </google-map>
+</div>
+
+<google-map height="90%" width="100%" [center]="center" [zoom]="zoom">
+  @for (marker of markers; track marker) {
+  <map-marker #markerSpot="mapMarker" [position]="marker.position" [options]="{draggable: false}"
+    (mapClick)="openInfoWindow(markerSpot, marker)" />
+  }
+  <map-info-window>
+    {{closestTargetAddress}}<br>{{distanceToTarget}}<br>{{durationToTarget}}
+  </map-info-window>
+  <map-polyline [path]="routeTo" />
+</google-map>

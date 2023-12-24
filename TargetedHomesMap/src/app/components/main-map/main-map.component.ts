@@ -1,23 +1,25 @@
 import { Component, ViewChild } from '@angular/core';
-import { GoogleMapsModule, MapInfoWindow, MapMarker, MapPolyline } from '@angular/google-maps';
+import { GoogleMapsModule, MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { TargetResponse } from '../../models/TargetResponse';
 import { ApiServiceService } from '../../services/api-service.service';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
 import { ClosestTargetResponse } from '../../models/ClosestTargetResponse';
-import { MatButtonModule } from '@angular/material/button';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { SidebarModule } from 'primeng/sidebar';
 
 @Component({
   selector: 'app-main-map',
   standalone: true,
   templateUrl: './main-map.component.html',
   styleUrl: './main-map.component.css',
-  imports: [GoogleMapsModule, MatFormFieldModule, MatInputModule, FormsModule, MatIconModule, MatButtonModule]
+  imports: [GoogleMapsModule, FormsModule, InputGroupModule, InputTextModule, ButtonModule, SidebarModule]
 })
 export class MainMapComponent {
   @ViewChild(MapInfoWindow) infoWindow: MapInfoWindow;
+
+  sidebarVisible = false;
 
   center: google.maps.LatLngLiteral = { lat: 35.5, lng: -80 };
   zoom = 8;
