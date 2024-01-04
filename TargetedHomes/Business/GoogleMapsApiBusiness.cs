@@ -81,7 +81,7 @@ namespace TargetedHomes.Business
                 TravelMode = RouteTravelMode.Drive
             };
             RoutesMatrixResponse matrixResponse = await _matrixApi.QueryAsync(matrixRequest);
-            MatrixElement closestTargetMatrixEl = matrixResponse.Elements.Aggregate((minItem, nextItem) => minItem.DistanceMeters < nextItem.DistanceMeters ? minItem : nextItem);
+            MatrixElement closestTargetMatrixEl = matrixResponse.Elements.Aggregate((minItem, nextItem) => minItem.Duration < nextItem.Duration ? minItem : nextItem);
             var closestTargetDestinationEl = destinations[closestTargetMatrixEl.DestinationIndex.GetValueOrDefault()].Waypoint.Location.LatLng;
 
             var directionsRequest = new RoutesDirectionsRequest

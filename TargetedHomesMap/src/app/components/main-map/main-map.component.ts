@@ -1,48 +1,50 @@
 import { Component, ViewChild } from '@angular/core';
-import { GoogleMapsModule, MapInfoWindow, MapMarker } from '@angular/google-maps';
-import { TargetResponse } from '../../models/TargetResponse';
+import { GoogleMap, GoogleMapsModule, MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { ApiServiceService } from '../../services/api-service.service';
 import { FormsModule } from '@angular/forms';
 import { ClosestTargetResponse } from '../../models/ClosestTargetResponse';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
-import { SidebarModule } from 'primeng/sidebar';
+import { MapSidebarComponent } from '../map-sidebar/map-sidebar.component';
+import { ResultsCardComponent } from '../results-card/results-card.component';
+import { HistoryItem } from '../../models/HistoryItem';
 
 @Component({
   selector: 'app-main-map',
   standalone: true,
   templateUrl: './main-map.component.html',
-  styleUrl: './main-map.component.css',
-  imports: [GoogleMapsModule, FormsModule, InputGroupModule, InputTextModule, ButtonModule, SidebarModule]
+  styleUrl: './main-map.component.scss',
+  imports: [GoogleMapsModule, FormsModule, InputGroupModule, InputTextModule, ButtonModule, MapSidebarComponent, ResultsCardComponent]
 })
 export class MainMapComponent {
   @ViewChild(MapInfoWindow) infoWindow: MapInfoWindow;
-
-  sidebarVisible = false;
+  @ViewChild(GoogleMap) googleMap: GoogleMap;
+  @ViewChild(MapSidebarComponent) mapSidebar: MapSidebarComponent;
+  @ViewChild(ResultsCardComponent) resultsCard: ResultsCardComponent;
 
   center: google.maps.LatLngLiteral = { lat: 35.5, lng: -80 };
   zoom = 8;
 
-  targetLocs: TargetResponse[] = [];
   markers: MarkerAttribute[] = [];
   selectedMarker: MarkerAttribute = new MarkerAttribute();
   routeTo: google.maps.LatLng[] = [];
-  distanceToTarget: string = '';
-  durationToTarget: string = '';
-  closestTargetAddress: string = '';
+  bounds: google.maps.LatLngBounds = new google.maps.LatLngBounds();
 
   addressInput: string = '';
 
   constructor(private api: ApiServiceService) {
     api.getTargetLocations().subscribe(res => {
       res.forEach(item => {
-        this.markers.push(new MarkerAttribute(
+        var marker = new MarkerAttribute(
           item.name,
           `${item.address}, ${item.city} ${item.state} ${item.zip}`,
           { lat: item.lat, lng: item.lon }
-        ));
+        );
+        this.markers.push(marker);
+        this.bounds.extend(marker.position)
       });
+    this.googleMap.fitBounds(this.bounds);
     });
   }
 
@@ -51,21 +53,46 @@ export class MainMapComponent {
     this.infoWindow.open(markerSpot);
   }
 
-  getNearestTarget() {
-    this.api.getNearestTarget(this.addressInput).subscribe(res => {
+  openSidebar() {
+    this.mapSidebar.openSidebar();
+  }
+
+  getNearestTarget(address?: string) {
+    this.api.getNearestTarget(address || this.addressInput).subscribe(res => {
       this.setNearestTargetValues(res);
     });
   }
 
+  getNearestTargetFromHistory(address: string) {
+    this.addressInput = address;
+    this.getNearestTarget(address);
+  }
+
+  clearAll() {
+    this.addressInput = '';
+  }
+
   setNearestTargetValues(target: ClosestTargetResponse) {
     this.routeTo = google.maps.geometry.encoding.decodePath(target.directions.encodedPolyline);
-    this.distanceToTarget = target.directions.drivingDistance;
-    this.durationToTarget = target.directions.drivingDuration;
-    this.closestTargetAddress = target.closestTarget.formattedAddress;
     this.center = { lat: target.directions.centerLat, lng: target.directions.centerLon };
-    this.zoom = 11;
-    this.infoWindow.position = { lat: target.closestTarget.latitude, lng: target.closestTarget.longitude };
-    this.infoWindow.open();
+    this.zoom = 9;
+    this.resultsCard.updateCard(target);
+    this.addLocationToHistory(target);
+  }
+
+  addLocationToHistory(target: ClosestTargetResponse) {
+    if (!localStorage.getItem('history'))
+      localStorage.setItem('history', '[]');
+    let currentHistory = localStorage.getItem('history');
+    let parsedHistory: HistoryItem[] = JSON.parse(currentHistory!);
+    console.log(parsedHistory)
+    console.log(target.closestTarget.formattedAddress)
+    if (!parsedHistory.find(x => x.address == target.origin.formattedAddress)) {
+      if (parsedHistory.length > 9)
+        parsedHistory.pop();
+      parsedHistory.push(new HistoryItem(target.origin.formattedAddress, target.directions.drivingDistance, target.directions.drivingDuration));
+      localStorage.setItem('history', JSON.stringify(parsedHistory));
+    }
   }
 }
 

@@ -1,7 +1,7 @@
 export class ClosestTargetResponse {
     closestTarget: ClosestTarget;
     directions: ClosestTargetDirections;
-    startingPoint: StartingPoint;
+    origin: Origin;
 }
 
 class ClosestTarget {
@@ -19,6 +19,6 @@ class ClosestTargetDirections {
     centerLon: number;
 }
 
-class StartingPoint {
+class Origin {
     formattedAddress: string;
 }

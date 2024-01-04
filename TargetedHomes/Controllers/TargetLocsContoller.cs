@@ -7,7 +7,7 @@ namespace TargetedHomes.Controllers
     [ApiController]
     public class TargetLocsContoller : ControllerBase
     {
-        private TargetBusiness _targetBusiness;
+        private readonly TargetBusiness _targetBusiness;
         public TargetLocsContoller(TargetBusiness targetBusiness)
         {
             _targetBusiness = targetBusiness;

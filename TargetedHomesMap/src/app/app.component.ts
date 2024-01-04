@@ -7,7 +7,7 @@ import { MainMapComponent } from "./components/main-map/main-map.component";
     selector: 'app-root',
     standalone: true,
     template: `<app-main-map />`,
-    styleUrl: './app.component.css',
+    styleUrl: './app.component.scss',
     imports: [CommonModule, RouterOutlet, MainMapComponent]
 })
 export class AppComponent {

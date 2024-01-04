@@ -1,0 +1,11 @@
+<div class="card flex justify-content-center" style="padding: 5px;">
+    <p-card styleClass="resultsCard" *ngIf="!result" [header]=initTitle>
+        <p class="m-0">
+            {{initBody}}
+        </p>
+    </p-card>
+    <p-card styleClass="resultsCard" *ngIf="result" header="Closest Target is {{result.closestTarget.targetName}}">
+        <p class="m-0">At {{result.closestTarget.formattedAddress}}</p>
+        <p class="m-0">{{result.directions.drivingDistance}}, {{result.directions.drivingDuration}}</p>
+    </p-card>
+</div>

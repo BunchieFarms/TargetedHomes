@@ -1,30 +1,27 @@
-<p-sidebar [(visible)]="sidebarVisible">
-  <h3>Sidebar</h3>
-  <p>
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-    aliqua.
-    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-  </p>
-</p-sidebar>
+<app-map-sidebar (routeToAddress)="getNearestTargetFromHistory($event)"></app-map-sidebar>
 
-<div class="card flex flex-column md:flex-row gap-3">
-  <p-button (click)="sidebarVisible = true" icon="pi pi-arrow-right"></p-button>
-
-  <form (ngSumbit)="getNearestTarget()" style="margin: 5px 20px;">
-    <p-inputGroup>
-      <input name="address" [(ngModel)]="addressInput" type="text" pInputText placeholder="Address" />
-      <button type="button" pButton (click)="getNearestTarget()" label="Search"></button>
-    </p-inputGroup>
-  </form>
+<div style="padding:5px;">
+  <p-inputGroup>
+    <button type="button" pButton (click)="openSidebar()" icon="pi pi-history"></button>
+    <button type="button" pButton (click)="clearAll()" icon="pi pi-times"></button>
+    <input autocomplete="off" name="address" [(ngModel)]="addressInput" type="text" (keyup.enter)="getNearestTarget()" pInputText placeholder="Address" />
+    <button type="button" pButton (click)="getNearestTarget()" label="Search"></button>
+  </p-inputGroup>
 </div>
 
-<google-map height="90%" width="100%" [center]="center" [zoom]="zoom">
+<google-map height="55%" width="100%" [center]="center" [zoom]="zoom">
   @for (marker of markers; track marker) {
   <map-marker #markerSpot="mapMarker" [position]="marker.position" [options]="{draggable: false}"
     (mapClick)="openInfoWindow(markerSpot, marker)" />
   }
   <map-info-window>
-    {{closestTargetAddress}}<br>{{distanceToTarget}}<br>{{durationToTarget}}
+    {{selectedMarker.title}}<br>{{selectedMarker.label}}
   </map-info-window>
   <map-polyline [path]="routeTo" />
 </google-map>
+
+<app-results-card></app-results-card>
+
+<div style="text-align: center;padding: 10px;">
+  <a href="http://bryceohmer.com">bryceohmer.com</a>
+</div>

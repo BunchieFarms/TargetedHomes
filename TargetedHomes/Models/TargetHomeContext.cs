@@ -8,12 +8,6 @@ namespace TargetedHomes.Models;
 
 public partial class TargetHomeContext : DbContext
 {
-    private readonly IConfiguration _config;
-    public TargetHomeContext(IConfiguration config)
-    {
-        _config = config;
-    }
-
     public TargetHomeContext(DbContextOptions<TargetHomeContext> options)
         : base(options)
     {
@@ -23,8 +17,9 @@ public partial class TargetHomeContext : DbContext
 
     public virtual DbSet<poi_locs> poi_locs { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql(_config["TargetHomeDatabase"]);
+    public virtual DbSet<user_locs> user_locs { get; set; }
+
+    public virtual DbSet<usernames> usernames { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -63,6 +58,46 @@ public partial class TargetHomeContext : DbContext
                 .HasForeignKey(d => d.group_id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("poi_locs_poi_group_id_fkey");
+        });
+
+        modelBuilder.Entity<user_locs>(entity =>
+        {
+            entity.HasKey(e => e.user_loc_id).HasName("user_locs_pkey");
+
+            entity.Property(e => e.user_loc_id).UseIdentityAlwaysColumn();
+            entity.Property(e => e.address)
+                .IsRequired()
+                .HasMaxLength(150);
+            entity.Property(e => e.city)
+                .IsRequired()
+                .HasMaxLength(50);
+            entity.Property(e => e.loc_link).HasMaxLength(500);
+            entity.Property(e => e.loc_notes).HasMaxLength(250);
+            entity.Property(e => e.name)
+                .IsRequired()
+                .HasMaxLength(100);
+            entity.Property(e => e.state)
+                .IsRequired()
+                .HasMaxLength(2)
+                .IsFixedLength();
+            entity.Property(e => e.zip)
+                .IsRequired()
+                .HasMaxLength(5)
+                .IsFixedLength();
+
+            entity.HasOne(d => d.user).WithMany(p => p.user_locs)
+                .HasForeignKey(d => d.user_id)
+                .HasConstraintName("fk_usernames");
+        });
+
+        modelBuilder.Entity<usernames>(entity =>
+        {
+            entity.HasKey(e => e.user_id).HasName("usernames_pkey");
+
+            entity.Property(e => e.user_id).UseIdentityAlwaysColumn();
+            entity.Property(e => e.username)
+                .IsRequired()
+                .HasMaxLength(50);
         });
 
         OnModelCreatingPartial(modelBuilder);

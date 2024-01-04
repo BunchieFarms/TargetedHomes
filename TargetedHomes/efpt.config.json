@@ -1,10 +1,10 @@
 ﻿{
    "CodeGenerationMode": 3,
-   "ContextClassName": "targetHomeContext",
+   "ContextClassName": "TargetHomeContext",
    "ContextNamespace": null,
    "DefaultDacpacSchema": null,
    "FilterSchemas": false,
-   "IncludeConnectionString": true,
+   "IncludeConnectionString": false,
    "ModelNamespace": null,
    "OutputContextPath": null,
    "OutputPath": "Models",
@@ -21,6 +21,14 @@
       },
       {
          "Name": "public.poi_locs",
+         "ObjectType": 0
+      },
+      {
+         "Name": "public.user_locs",
+         "ObjectType": 0
+      },
+      {
+         "Name": "public.usernames",
          "ObjectType": 0
       }
    ],

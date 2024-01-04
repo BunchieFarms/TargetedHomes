@@ -1,6 +1,8 @@
 using GoogleApi.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.EntityFrameworkCore;
 using TargetedHomes.Business;
+using TargetedHomes.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -27,6 +29,10 @@ builder.Services.AddCors(options =>
                                 .AllowAnyMethod(); ;
                       });
 });
+
+var connection = builder.Configuration["TargetHomeDatabase"];
+builder.Services.AddDbContext<TargetHomeContext>(options => options.UseNpgsql(connection));
+builder.Services.AddScoped<TargetHomeContext>();
 
 builder.Services
     .AddGoogleApiClients();

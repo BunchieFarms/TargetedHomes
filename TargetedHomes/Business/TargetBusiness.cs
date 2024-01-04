@@ -4,20 +4,15 @@ namespace TargetedHomes.Business
 {
     public class TargetBusiness
     {
-        private readonly IConfiguration _config;
-        public TargetBusiness(IConfiguration config)
+        private readonly TargetHomeContext _context;
+        public TargetBusiness(TargetHomeContext context)
         {
-            _config = config;
+            _context = context;
         }
 
         public IEnumerable<poi_locs> GetTargets(string state)
         {
-            List<poi_locs> retVal;
-            using (var db = new TargetHomeContext(_config))
-            {
-                retVal = db.poi_locs.Where(x => x.state == state).ToList();
-            }
-            return retVal;
+            return _context.poi_locs.Where(x => x.state == state).ToList();
         }
     }
 }

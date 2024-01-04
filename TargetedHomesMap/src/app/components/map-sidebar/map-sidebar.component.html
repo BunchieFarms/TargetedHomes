@@ -1,0 +1,15 @@
+<p-sidebar [(visible)]="sidebarVisible">
+    <h3>History</h3>
+    <p *ngIf="localHistory.length === 0">No History Yet!</p>
+    <div *ngIf="localHistory.length > 0">
+        <div *ngFor="let item of localHistory">
+            <p-card (click)="routeToHistory(item.address)" styleClass="historyCard" [header]=item.address>
+                <p class="m-0">{{item.distance}}, {{item.duration}}</p>
+            </p-card>
+        </div>
+    </div>
+
+    <div style="text-align: center;padding: 10px;cursor: pointer;">
+        <a (click)="clearHistory()">clear history</a>
+    </div>
+</p-sidebar>
